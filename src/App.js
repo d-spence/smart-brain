@@ -33,7 +33,7 @@ const particlesOptions = {
     },
     modes: {
       repulse: {
-        distance: 150,
+        distance: 100,
         duration: 0.4
       }
     }
@@ -46,7 +46,28 @@ class App extends Component {
     this.state = {
       input: '',
       imageUrl: '',
+      box: {},
     }
+  }
+
+  calculateFaceLocation = (data) => {
+    // return box object calculated based on clarifai's response data
+    const faceBoxData = data.outputs[0].data.regions[0].region_info.bounding_box;
+    const image = document.getElementById('inputimage');
+    const width = Number(image.width);
+    const height = Number(image.height);
+    // console.log(width, height);
+    return {
+      leftCol: faceBoxData.left_col * width,
+      topRow: faceBoxData.top_row * height,
+      rightCol: width - (faceBoxData.right_col * width),
+      bottomRow: height - (faceBoxData.bottom_row * height)
+    }
+  }
+
+  displayFaceBox = (box) => {
+    console.log(box);
+    this.setState({box: box});
   }
 
   onInputChange = (event) => {
@@ -59,13 +80,8 @@ class App extends Component {
       .predict(
         Clarifai.FACE_DETECT_MODEL,
         this.state.input)
-      .then((response) => {
-        console.log(response);
-      },
-      (err) => {
-        // Do something if error happens
-      }
-    )
+      .then((response) => this.displayFaceBox(this.calculateFaceLocation(response)))
+      .catch(err => console.log(err));
   }
 
   render() {
@@ -80,7 +96,7 @@ class App extends Component {
           onInputChange={this.onInputChange}
           onButtonSubmit={this.onButtonSubmit}
         />
-        <FaceRecognition imageUrl={this.state.imageUrl}/>
+        <FaceRecognition box={this.state.box} imageUrl={this.state.imageUrl}/>
       </div>
     );
   }
