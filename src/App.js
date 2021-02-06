@@ -42,6 +42,22 @@ const particlesOptions = {
   }
 }
 
+// Initial state for app when user signs out
+const initialState = {
+  input: '',
+  imageUrl: '',
+  box: {},
+  route: 'signin',
+  isSignedIn: false,
+  user: {
+    id: '',
+    name: '',
+    email: '',
+    entries: 0,
+    joined: '',
+  }
+}
+
 class App extends Component {
   constructor() {
     super();
@@ -113,6 +129,7 @@ class App extends Component {
             .then(count => {
               this.setState(Object.assign(this.state.user, {entries: count}))
             })
+            .catch(console.log);
         }
         this.displayFaceBox(this.calculateFaceLocation(response))
       })
@@ -121,7 +138,7 @@ class App extends Component {
 
   onRouteChange = (route) => {
     if (route === 'signout' || route === 'signin') {
-      this.setState({isSignedIn: false});
+      this.setState(initialState);
     } else if (route === 'home') {
       this.setState({isSignedIn: true});
     }
