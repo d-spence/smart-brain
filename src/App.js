@@ -106,7 +106,7 @@ class App extends Component {
 
   onButtonSubmit = () => {
     this.setState({imageUrl: this.state.input});
-      fetch('https://polar-plateau-76372.herokuapp.com/imageurl', {
+      fetch('https://smart-brain-api-76372.herokuapp.com/imageurl', {
         method: 'post',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
@@ -116,7 +116,7 @@ class App extends Component {
       .then(response => response.json())
       .then((response) => {
         if (response) {
-          fetch('https://polar-plateau-76372.herokuapp.com/image', {
+          fetch('https://smart-brain-api-76372.herokuapp.com/image', {
             method: 'put',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
